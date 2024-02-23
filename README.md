@@ -1,51 +1,38 @@
-# RanjanToken Contract
+## FreeFireToken
 
-The RanjanToken contract is a Solidity smart contract based on the ERC20 token standard. It provides functionalities for creating, transferring, and managing tokens on the Ethereum blockchain.
+FreeFireToken is an ERC20-compliant token contract built on the Ethereum blockchain. It represents an in-game currency for the Free Fire game, allowing players to interact with the game economy and perform various actions.
 
-## Overview
+### Features
 
-The `RanjanToken` contract represents a token named "RAN" (RanjanToken) with unique functionalities. It is deployed as an ERC20 token with the ability to collect sand, fight demons, and purchase swords.
+- **Kill Count Tracking**: The contract tracks the kill count of each player, recording the number of enemies defeated by them.
+- **Villain Defeat**: Players can mark villains as defeated within the game.
+- **Reward Issuance**: Game administrators can issue rewards to players based on their performance or participation.
+- **Reward Redemption**: Players can redeem rewards they have earned in the game.
+- **Balance Checking**: Players can check their token balance at any time.
+- **Token Transfer**: Players can transfer tokens to other addresses.
+- **Token Burning**: Players have the option to burn tokens, removing them from circulation.
 
-### Token Details
+### Events
 
-- **Name**: RanjanToken
-- **Symbol**: RAN
+- `PlayerKilled`: Triggered when a player defeats enemies and increases their kill count.
+- `VillainDefeated`: Triggered when a player defeats a villain within the game.
+- `RewardsIssued`: Triggered when rewards are issued to a player by the game administrator.
+- `RewardsRedeemed`: Triggered when a player redeems their earned rewards.
 
-### Initial Token Supply
+### Functions
 
-The contract initializes the token with an initial supply of 10 RAN tokens, which are minted to the contract deployer upon deployment.
+- `collectKillCount(uint256 enemies)`: Records the number of enemies defeated by the calling player.
+- `defeatVillain()`: Marks the calling player as having defeated a villain.
+- `issueRewards(address player, uint256 rewards)`: Allows the game administrator to issue rewards to a player.
+- `redeemRewards()`: Allows players to redeem their earned rewards.
+- `checkBalance(address account)`: Retrieves the token balance of a specified account.
+- `transferTokens(address recipient, uint256 amount)`: Transfers tokens from the caller's address to the specified recipient.
+- `burn(uint256 amount)`: Burns a specified amount of tokens, removing them from circulation.
 
-## Functions
+### Deployment
 
-The contract provides the following functions:
+The FreeFireToken contract can be deployed on the Ethereum blockchain. Ensure to specify an initial owner address during deployment.
 
-- `collectSand(uint256 sandAmt)`: Allows the contract owner to collect additional sand by minting new RAN tokens.
-  
-- `fightDemons()`: Enables token holders to fight demons by burning a specified amount of sand and decreasing sword strength.
+### License
 
-- `buySword()`: Allows token holders to purchase swords by burning a specific amount of sand and increasing sword strength.
-
-### Ownership
-
-The contract is Ownable, meaning the deployer has special privileges, including the ability to collect sand and manage the contract.
-
-## Deployment
-
-To deploy the `RanjanToken` contract, use a compatible Ethereum wallet or development environment. The contract initializes with an initial supply of 10 RAN tokens and 60 sands.
-
-## Usage
-
-1. **Collecting Sand**: The contract owner can collect additional sand using the `collectSand` function.
-
-2. **Fighting Demons**: Token holders can use the `fightDemons` function to fight demons, requiring a minimum sand amount and sword strength.
-
-3. **Purchasing Swords**: Token holders can buy swords using the `buySword` function, requiring a specific amount of sand.
-
-## Security Considerations
-
-- The contract should be deployed and interacted with using secure wallets and client applications.
-- Ensure that only authorized parties have access to privileged functions such as `collectSand`.
-
-## License
-
-This contract is licensed under the MIT License.
+This contract is licensed under the MIT License, allowing for open use and modification.
