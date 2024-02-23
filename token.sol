@@ -1,36 +1,54 @@
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract RanjanToken is ERC20, Ownable {
-    uint256 public sands;
-    uint256 public swordStrength;
+contract FreeFireToken is ERC20, Ownable {
+    mapping(address => uint256) public killCount;
+    mapping(address => bool) public rewardsRedeemed;
+    mapping(address => bool) public villainsDefeated;
 
-    constructor() ERC20("RanjanToken", "RAN") {
-        _mint(msg.sender, 10 * 10 ** decimals());
-        sands = 60;
-        swordStrength = 10;
+    event PlayerKilled(address indexed player, uint256 enemies);
+    event VillainDefeated(address indexed villain);
+    event RewardsIssued(address indexed player, uint256 rewards);
+    event RewardsRedeemed(address indexed player);
+
+    constructor(address initialOwner) ERC20("FreeFireToken", "FF") Ownable(initialOwner) {
+        _mint(msg.sender, 1 * 10 ** uint(decimals()));
     }
 
-    function collectSand(uint256 sandAmt) public onlyOwner {
-        _mint(msg.sender, sandAmt);
-        sands += sandAmt;
+    function issueRewards(address player, uint256 rewards) public onlyOwner {
+        rewardsRedeemed[player] = false;
+        _mint(player, rewards);
+        emit RewardsIssued(player, rewards);
     }
 
-    function fightDemons() public {
-        require(sands >= 15 && swordStrength > 0, "Not enough strength to fight demons");
-        _burn(msg.sender, 15);
-        sands -= 10;
-        swordStrength--;
+    function redeemRewards() public {
+        require(!rewardsRedeemed[msg.sender], "Rewards already redeemed");
+        rewardsRedeemed[msg.sender] = true;
+        emit RewardsRedeemed(msg.sender);
     }
 
-    function buySword() public {
-        require(sands >= 30, "Not enough sand to forge sword");
-        _burn(msg.sender, 30);
-        sands -= 30;
-        swordStrength += 10;
+    function checkBalance(address account) public view returns (uint256) {
+        return balanceOf(account);
+    }
+
+    function transferTokens(address recipient, uint256 amount) public {
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+        _transfer(msg.sender, recipient, amount);
+    }
+
+   function collectKillCount(uint256 enemies) public {
+        killCount[msg.sender] += enemies;
+        emit PlayerKilled(msg.sender, enemies);
+    }
+
+    function defeatVillain() public {
+        villainsDefeated[msg.sender] = true;
+        emit VillainDefeated(msg.sender);
+    }
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
     }
 }
