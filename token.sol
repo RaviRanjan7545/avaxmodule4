@@ -26,6 +26,7 @@ contract FreeFireToken is ERC20, Ownable {
 
     function redeemRewards() public {
         require(!rewardsRedeemed[msg.sender], "Rewards already redeemed");
+        require(killCount[msg.sender]>=100,"you don't have enough kill count to redeem rewards");
         rewardsRedeemed[msg.sender] = true;
         emit RewardsRedeemed(msg.sender);
     }
