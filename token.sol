@@ -5,51 +5,49 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract FreeFireToken is ERC20, Ownable {
-    mapping(address => uint256) public killCount;
-    mapping(address => bool) public rewardsRedeemed;
-    mapping(address => bool) public villainsDefeated;
 
-    event PlayerKilled(address indexed player, uint256 enemies);
-    event VillainDefeated(address indexed villain);
-    event RewardsIssued(address indexed player, uint256 rewards);
-    event RewardsRedeemed(address indexed player);
+    uint256 public currAmmo = 10;
+    mapping(address => uint256) prize;
+    mapping(address => bool) prizeRedeemed;
+    mapping(address => bool) specialItemsRedeemed;
 
-    constructor(address initialOwner) ERC20("FreeFireToken", "FF") Ownable(initialOwner) {
-        _mint(msg.sender, 1 * 10 ** uint(decimals()));
+    constructor(address initialOwner) ERC20("FreeFireToken", "COD") Ownable(initialOwner) {
+        _mint(msg.sender, currAmmo);
     }
 
-    function issueRewards(address player, uint256 rewards) public onlyOwner {
-        rewardsRedeemed[player] = false;
-        _mint(player, rewards);
-        emit RewardsIssued(player, rewards);
+    function buyAmmo(uint256 ammo) public {
+        _mint(msg.sender, ammo);
+        currAmmo += ammo;
     }
 
-    function redeemRewards() public {
-        require(!rewardsRedeemed[msg.sender], "Rewards already redeemed");
-        require(killCount[msg.sender]>=100,"you don't have enough kill count to redeem rewards");
-        rewardsRedeemed[msg.sender] = true;
-        emit RewardsRedeemed(msg.sender);
+    function shootEnemies(uint256 enemy) public {
+        require(currAmmo > 0, "Not enough ammo");
+        require(enemy > 0, "Enemy shot down must be greater than 0");
+
+        currAmmo -= enemy;
+        _burn(msg.sender, enemy);
     }
 
-    function checkBalance(address account) public view returns (uint256) {
-        return balanceOf(account);
+    function addPrizes(address addr, uint256 prz) public onlyOwner {
+        prize[addr] = prz;
+        prizeRedeemed[addr] = false;
     }
 
-    function transferTokens(address recipient, uint256 amount) public {
-        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+    function redeemPrizes() public {
+        require(!prizeRedeemed[msg.sender], "Prize already redeemed");
+        prizeRedeemed[msg.sender] = true;
+    }
+
+    function redeemSpecialItem() public {
+        require(!specialItemsRedeemed[msg.sender], "Special item already redeemed");
+        require(balanceOf(msg.sender) >= 100, "Insufficient balance to redeem special item");
+        specialItemsRedeemed[msg.sender] = true;
+        _mint(msg.sender, 50); 
+    }
+
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(amount <= balanceOf(msg.sender), "Insufficient balance");
         _transfer(msg.sender, recipient, amount);
-    }
-
-   function collectKillCount(uint256 enemies) public {
-        killCount[msg.sender] += enemies;
-        emit PlayerKilled(msg.sender, enemies);
-    }
-
-    function defeatVillain() public {
-        villainsDefeated[msg.sender] = true;
-        emit VillainDefeated(msg.sender);
-    }
-    function burn(uint256 amount) public {
-        _burn(msg.sender, amount);
+        return true;
     }
 }
