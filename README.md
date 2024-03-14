@@ -1,41 +1,39 @@
-# FreeFireToken
+# DegenToken
 
-FreeFireToken is an ERC20 token contract implemented on the Ethereum blockchain. It provides functionalities for managing in-game tokens for the FreeFire game.
+DegenToken is an ERC20 token contract named "Degen" with the symbol "DGN". It provides functionality for managing experience points (xP), coins, and ammunition (ammo). Users can earn xP by shooting enemies, redeem xP for coins, buy bullets using coins, and transfer tokens between accounts.
 
 ## Features
 
-- **Token Management**: Players can buy ammo, shoot enemies, and redeem prizes using the FreeFireToken.
-- **Prizes**: The contract owner can add prizes for players to redeem.
-- **Special Items**: Players can redeem special items based on certain conditions.
-- **Transferability**: Tokens can be transferred between addresses.
+- `redeemXP`: Allows users to redeem their accumulated experience points for coins.
+- `buyBullet`: Enables users to purchase bullets using coins.
+- `shootEnemy`: Deducts ammunition to shoot enemies and awards experience points.
+- `transfer`: Overrides the ERC20 `transfer` function to enforce additional balance checks.
 
-## Getting Started
+## Initial State
 
-To interact with the FreeFireToken contract, you can deploy it to the Ethereum network using Remix or any other Ethereum development environment.
+- Upon deployment, the contract mints 10 Degen tokens to the deploying address.
+- 10 coins are also allocated to the deploying address.
+- Initially, there are 0 experience points and 4 ammunition available.
 
-### Prerequisites
+## Requirements
 
-- Install an Ethereum wallet (such as MetaMask) and connect it to the Ethereum testnet or mainnet.
-- Use Remix or another Ethereum development environment to deploy and interact with the contract.
+- Solidity compiler version: ^0.8.0
+- OpenZeppelin library for ERC20 and Ownable functionalities.
 
-### Deployment
+## Usage
 
-1. Deploy the FreeFireToken contract to the Ethereum network.
-2. Provide an initial owner address when deploying the contract.
+1. **Redeeming Experience Points (xP)**
+   - Call the `redeemXP` function to exchange accumulated xP for coins.
 
-### Usage
+2. **Buying Bullets**
+   - Use the `buyBullet` function to purchase ammunition using coins.
 
-- Use the `buyAmmo` function to purchase ammo.
-- Use the `shootEnemies` function to shoot enemies and burn tokens.
-- The contract owner can add prizes using the `addPrizes` function.
-- Players can redeem prizes with the `redeemPrizes` function.
-- Special items can be redeemed with the `redeemSpecialItem` function.
-- Tokens can be transferred between addresses using the `transfer` function.
+3. **Shooting Enemies**
+   - Execute the `shootEnemy` function to consume ammunition and gain experience points.
 
-## Contributing
+4. **Transferring Tokens**
+   - Transfer Degen tokens to other accounts using the standard ERC20 `transfer` function.
 
-Contributions to the FreeFireToken contract are welcome! If you have suggestions for improvements, open an issue or submit a pull request.
+5. **Viewing Balances**
+   - Use the `getBalance` function to check the token balance of a specific account.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
