@@ -4,50 +4,54 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract FreeFireToken is ERC20, Ownable {
+contract DegenToken is ERC20, Ownable {
+    uint256 xP;
+    uint256 coins;
+    uint256 ammo;
 
-    uint256 public currAmmo = 10;
-    mapping(address => uint256) prize;
-    mapping(address => bool) prizeRedeemed;
-    mapping(address => bool) specialItemsRedeemed;
-
-    constructor(address initialOwner) ERC20("FreeFireToken", "COD") Ownable(initialOwner) {
-        _mint(msg.sender, currAmmo);
+    constructor() ERC20("Degen", "DGN") Ownable(msg.sender) {
+        _mint(msg.sender, 10);
+        coins = 10;
+        xP = 0;
+        ammo = 4;
     }
 
-    function buyAmmo(uint256 ammo) public {
-        _mint(msg.sender, ammo);
-        currAmmo += ammo;
+    function redeemXP() public {
+        require(xP > 0, "No xP to redeem");
+        if (xP > 20) {
+            coins += xP * 2;
+            _mint(msg.sender, xP * 2);
+        } else {
+            coins += xP;
+            _mint(msg.sender, xP);
+        }
+        xP = 0;
     }
 
-    function shootEnemies(uint256 enemy) public {
-        require(currAmmo > 0, "Not enough ammo");
-        require(enemy > 0, "Enemy shot down must be greater than 0");
-
-        currAmmo -= enemy;
-        _burn(msg.sender, enemy);
+    function buyBullet(uint256 amount) public {
+        require(coins >= amount, "Amount should be less than coins");
+        coins -= amount;
+        _burn(msg.sender, amount);
+        ammo += amount;
     }
 
-    function addPrizes(address addr, uint256 prz) public onlyOwner {
-        prize[addr] = prz;
-        prizeRedeemed[addr] = false;
+    function shootEnemy() public {
+        require(ammo > 0, "At least one bullet required to kill enemy");
+        ammo--;
+        xP += 2;
     }
 
-    function redeemPrizes() public {
-        require(!prizeRedeemed[msg.sender], "Prize already redeemed");
-        prizeRedeemed[msg.sender] = true;
-    }
-
-    function redeemSpecialItem() public {
-        require(!specialItemsRedeemed[msg.sender], "Special item already redeemed");
-        require(balanceOf(msg.sender) >= 100, "Insufficient balance to redeem special item");
-        specialItemsRedeemed[msg.sender] = true;
-        _mint(msg.sender, 50); 
-    }
-
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
-        require(amount <= balanceOf(msg.sender), "Insufficient balance");
-        _transfer(msg.sender, recipient, amount);
+    function transfer(address to, uint256 amount)
+        public
+        override
+        returns (bool)
+    {
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+        _transfer(msg.sender, to, amount);
         return true;
+    }
+
+    function getBalance(address account) public view returns (uint256) {
+        return balanceOf(account);
     }
 }
