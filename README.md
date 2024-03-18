@@ -1,39 +1,60 @@
-# DegenToken
+# DegenGamingToken Smart Contract
 
-DegenToken is an ERC20 token contract named "Degen" with the symbol "DGN". It provides functionality for managing experience points (xP), coins, and ammunition (ammo). Users can earn xP by shooting enemies, redeem xP for coins, buy bullets using coins, and transfer tokens between accounts.
+This is a Solidity smart contract for DegenGamingToken, an ERC-20 token designed for gaming applications. The contract includes various functionalities such as minting tokens, transferring tokens, approving spending limits, burning tokens, checking balances, claiming rewards, and handling in-game purchases.
 
-## Features
+## Overview
 
-- `redeemXP`: Allows users to redeem their accumulated experience points for coins.
-- `buyBullet`: Enables users to purchase bullets using coins.
-- `shootEnemy`: Deducts ammunition to shoot enemies and awards experience points.
-- `transfer`: Overrides the ERC20 `transfer` function to enforce additional balance checks.
+- **Name:** Degen Token
+- **Symbol:** DGN
+- **Decimals:** 18
 
-## Initial State
+## Functionality
 
-- Upon deployment, the contract mints 10 Degen tokens to the deploying address.
-- 10 coins are also allocated to the deploying address.
-- Initially, there are 0 experience points and 4 ammunition available.
+1. **Minting Tokens:**
+   - Function: `mint(address account, uint256 amount)`
+   - Description: Mints a specified amount of tokens and adds them to the balance of the specified account.
+   - Reward: Grants 3 tokens to the recipient.
 
-## Requirements
+2. **Transferring Tokens:**
+   - Function: `transfer(address recipient, uint256 amount)`
+   - Description: Transfers a specified amount of tokens from the sender's balance to the recipient's balance.
+   - Reward: Grants 2 tokens to the recipient.
 
-- Solidity compiler version: ^0.8.0
-- OpenZeppelin library for ERC20 and Ownable functionalities.
+3. **Approving Spending Limits:**
+   - Function: `approve(address spender, uint256 amount)`
+   - Description: Approves a spender to transfer a specified amount of tokens on behalf of the owner.
+   - Reward: Grants 4 tokens to the spender.
+
+4. **Transferring Tokens From:**
+   - Function: `transferFrom(address sender, address recipient, uint256 amount)`
+   - Description: Transfers a specified amount of tokens from the sender's balance to the recipient's balance, using the allowance mechanism.
+   - Reward: Grants 5 tokens to the sender.
+
+5. **Burning Tokens:**
+   - Function: `burn(uint256 amount)`
+   - Description: Burns a specified amount of tokens, reducing the total supply.
+   - Note: No rewards are given for burning tokens.
+
+6. **Checking Balances:**
+   - Function: `balanceOf(address account)`
+   - Description: Returns the balance of tokens for a specified account.
+
+7. **Claiming Rewards:**
+   - Function: `claimReward()`
+   - Description: Claims any accumulated rewards for the caller.
+   - Reward: Claims the accumulated rewards for the caller.
+
+8. **In-Game Purchases:**
+   - Function: `InGamePurchase(uint256 amount)`
+   - Description: Allows users to make in-game purchases using tokens.
+   - Reward: Grants 4 tokens to the user making the purchase.
+
+9. **Adding Rewards Manually:**
+   - Function: `addReward(address account, uint256 amount)`
+   - Description: Allows the contract owner to manually add rewards to a user's account.
 
 ## Usage
 
-1. **Redeeming Experience Points (xP)**
-   - Call the `redeemXP` function to exchange accumulated xP for coins.
-
-2. **Buying Bullets**
-   - Use the `buyBullet` function to purchase ammunition using coins.
-
-3. **Shooting Enemies**
-   - Execute the `shootEnemy` function to consume ammunition and gain experience points.
-
-4. **Transferring Tokens**
-   - Transfer Degen tokens to other accounts using the standard ERC20 `transfer` function.
-
-5. **Viewing Balances**
-   - Use the `getBalance` function to check the token balance of a specific account.
-
+1. Deploy the contract to an Ethereum-compatible blockchain.
+2. Use the provided functions to interact with the token, transfer tokens, approve spending limits, claim rewards, and make in-game purchases.
+3. Use the `addReward` function to manually add rewards to user accounts.
